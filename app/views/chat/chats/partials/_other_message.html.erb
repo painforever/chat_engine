@@ -1,6 +1,6 @@
 <li>
   <div class="message-data">
-    <span class="message-data-name"><i class="fa fa-circle online"></i><%= chat_message.provider.proper_name rescue 'Provider' %></span>
+    <span class="message-data-name"><i class="fa fa-circle online"></i><%= chat_message.sender_name rescue 'Provider' %></span>
     <span class="message-data-time"><%= send_time((chat_message.created_at || Time.now)) %></span>
   </div>
   <div class="message my-message">

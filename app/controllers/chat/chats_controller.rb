@@ -33,6 +33,9 @@ module Chat
       @chat_message.save!
     end
 
+
+    
+
     def pay
       Stripe.api_key = Constants::STRIPE_API_SECRET_KEY
 

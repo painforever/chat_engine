@@ -4,13 +4,27 @@ module Chat
     before_action :set_message, only: [:create, :new, :index]
 
     def index
-      @provider_accesses = @patient.provider_accesses.with_providers_primary_taxonomies
-      if params[:access_id].present?
-        @provider_access = ProviderAccess.find(params[:access_id])
-        @messages = ChatMessage.where(provider_access_id: params[:access_id])
-      else
-        @provider_access = ProviderAccess.find(@provider_accesses.first.id)
-        @messages = ChatMessage.where(provider_access_id: @provider_accesses.first.id)
+      if current_user.patient?
+        @provider_accesses = @patient.provider_accesses.with_providers_primary_taxonomies
+        @user_ids = Provider.where(id: @provider_accesses.pluck(:provider_id)).pluck(:user_id)
+        if params[:access_id].present?
+          @provider_access = ProviderAccess.find(params[:access_id])
+          @messages = ChatMessage.with_sender.where(provider_access_id: params[:access_id])
+        else
+          @provider_access = ProviderAccess.find(@provider_accesses.first.id)
+          @messages = ChatMessage.with_sender.where(provider_access_id: @provider_accesses.first.id)
+        end
+      elsif current_user.provider?
+        set_provider
+        @provider_accesses = @provider.provider_accesses.with_providers_primary_taxonomies
+        @user_ids = Patient.where(id: @provider_accesses.pluck(:patient_id)).pluck(:user_id)
+        if params[:access_id].present?
+          @provider_access = ProviderAccess.find(params[:access_id])
+          @messages = ChatMessage.with_sender.where(provider_access_id: params[:access_id])
+        else
+          @provider_access = ProviderAccess.find(@provider_accesses.first.id)
+          @messages = ChatMessage.with_sender.where(provider_access_id: @provider_accesses.first.id)
+        end
       end
     end
 
@@ -96,6 +110,10 @@ module Chat
     private
     def set_message
       @chat_message = ChatMessage.new
+    end
+
+    def set_provider
+      @provider = Provider.find(params[:provider_id])
     end
   end
 end

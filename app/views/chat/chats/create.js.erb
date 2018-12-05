@@ -3,6 +3,7 @@
   $(".chat-history").scrollTop($(".chat-history")[0].scrollHeight);
   socket.emit('new_message',
       {sender_name: "<%= @chat_message.sender_name %>",
+          receiver_user_id: $("#chat-data").data("receiver-user-id"),
           datetime: "<%= send_time(@chat_message.created_at) %>",
           content: "<%= @chat_message.content %>"});
  // $("#chat_message_content").val("");

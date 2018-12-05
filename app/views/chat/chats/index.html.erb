@@ -1,7 +1,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.slim.js"></script>
 <script>
     const socket = io('http://localhost:8998');
-    socket.on('coming_message', function(data) {
+    socket.on('user_<%= current_user.id %>', function(data) {
         $(".chat-history").append("<li>\n" +
             "  <div class=\"message-data\">\n" +
             "    <span class=\"message-data-name\"><i class=\"fa fa-circle online\"></i>"+ data.sender_name +"</span>\n" +
@@ -25,11 +25,11 @@
       <i class="fa fa-search"></i>
     </div>
     <ul class="list">
-      <% @provider_accesses.each do |access| %>
+      <% @provider_accesses.each_with_index do |access, i| %>
         <% if access.provider.present? && access.provider.user.present? %>
           <% provider = access.provider %>
-          <%= link_to patient_chats_path(access_id: access.id) do %>
-            <li class="clearfix">
+
+            <li class="clearfix" id="user_<%= @user_ids[i] %>">
               <%= image_tag "https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_01.jpg", class: "center-block img-responsive img-thumbnail thumb64" %>
               <!--            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_01.jpg" alt="avatar" />-->
               <div class="about">
@@ -39,110 +39,110 @@
                 </div>
               </div>
             </li>
-          <% end %>
+
         <% end %>
       <% end %>
 
 
-      <li class="clearfix">
-        <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_01.jpg" alt="avatar" />
-        <div class="about">
-          <div class="name">Vincent Porter</div>
-          <div class="status">
-            <i class="fa fa-circle online"></i> online
-          </div>
-        </div>
-      </li>
+<!--      <li class="clearfix">-->
+<!--        <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_01.jpg" alt="avatar" />-->
+<!--        <div class="about">-->
+<!--          <div class="name">Vincent Porter</div>-->
+<!--          <div class="status">-->
+<!--            <i class="fa fa-circle online"></i> online-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </li>-->
 
-      <li class="clearfix">
-        <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_02.jpg" alt="avatar" />
-        <div class="about">
-          <div class="name">Aiden Chavez</div>
-          <div class="status">
-            <i class="fa fa-circle offline"></i> left 7 mins ago
-          </div>
-        </div>
-      </li>
+<!--      <li class="clearfix">-->
+<!--        <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_02.jpg" alt="avatar" />-->
+<!--        <div class="about">-->
+<!--          <div class="name">Aiden Chavez</div>-->
+<!--          <div class="status">-->
+<!--            <i class="fa fa-circle offline"></i> left 7 mins ago-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </li>-->
 
-      <li class="clearfix">
-        <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_03.jpg" alt="avatar" />
-        <div class="about">
-          <div class="name">Mike Thomas</div>
-          <div class="status">
-            <i class="fa fa-circle online"></i> online
-          </div>
-        </div>
-      </li>
+<!--      <li class="clearfix">-->
+<!--        <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_03.jpg" alt="avatar" />-->
+<!--        <div class="about">-->
+<!--          <div class="name">Mike Thomas</div>-->
+<!--          <div class="status">-->
+<!--            <i class="fa fa-circle online"></i> online-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </li>-->
 
-      <li class="clearfix">
-        <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_04.jpg" alt="avatar" />
-        <div class="about">
-          <div class="name">Erica Hughes</div>
-          <div class="status">
-            <i class="fa fa-circle online"></i> online
-          </div>
-        </div>
-      </li>
+<!--      <li class="clearfix">-->
+<!--        <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_04.jpg" alt="avatar" />-->
+<!--        <div class="about">-->
+<!--          <div class="name">Erica Hughes</div>-->
+<!--          <div class="status">-->
+<!--            <i class="fa fa-circle online"></i> online-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </li>-->
 
-      <li class="clearfix">
-        <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_05.jpg" alt="avatar" />
-        <div class="about">
-          <div class="name">Ginger Johnston</div>
-          <div class="status">
-            <i class="fa fa-circle online"></i> online
-          </div>
-        </div>
-      </li>
+<!--      <li class="clearfix">-->
+<!--        <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_05.jpg" alt="avatar" />-->
+<!--        <div class="about">-->
+<!--          <div class="name">Ginger Johnston</div>-->
+<!--          <div class="status">-->
+<!--            <i class="fa fa-circle online"></i> online-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </li>-->
 
-      <li class="clearfix">
-        <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_06.jpg" alt="avatar" />
-        <div class="about">
-          <div class="name">Tracy Carpenter</div>
-          <div class="status">
-            <i class="fa fa-circle offline"></i> left 30 mins ago
-          </div>
-        </div>
-      </li>
+<!--      <li class="clearfix">-->
+<!--        <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_06.jpg" alt="avatar" />-->
+<!--        <div class="about">-->
+<!--          <div class="name">Tracy Carpenter</div>-->
+<!--          <div class="status">-->
+<!--            <i class="fa fa-circle offline"></i> left 30 mins ago-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </li>-->
 
-      <li class="clearfix">
-        <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_07.jpg" alt="avatar" />
-        <div class="about">
-          <div class="name">Christian Kelly</div>
-          <div class="status">
-            <i class="fa fa-circle offline"></i> left 10 hours ago
-          </div>
-        </div>
-      </li>
+<!--      <li class="clearfix">-->
+<!--        <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_07.jpg" alt="avatar" />-->
+<!--        <div class="about">-->
+<!--          <div class="name">Christian Kelly</div>-->
+<!--          <div class="status">-->
+<!--            <i class="fa fa-circle offline"></i> left 10 hours ago-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </li>-->
 
-      <li class="clearfix">
-        <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_08.jpg" alt="avatar" />
-        <div class="about">
-          <div class="name">Monica Ward</div>
-          <div class="status">
-            <i class="fa fa-circle online"></i> online
-          </div>
-        </div>
-      </li>
+<!--      <li class="clearfix">-->
+<!--        <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_08.jpg" alt="avatar" />-->
+<!--        <div class="about">-->
+<!--          <div class="name">Monica Ward</div>-->
+<!--          <div class="status">-->
+<!--            <i class="fa fa-circle online"></i> online-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </li>-->
 
-      <li class="clearfix">
-        <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_09.jpg" alt="avatar" />
-        <div class="about">
-          <div class="name">Dean Henry</div>
-          <div class="status">
-            <i class="fa fa-circle offline"></i> offline since Oct 28
-          </div>
-        </div>
-      </li>
+<!--      <li class="clearfix">-->
+<!--        <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_09.jpg" alt="avatar" />-->
+<!--        <div class="about">-->
+<!--          <div class="name">Dean Henry</div>-->
+<!--          <div class="status">-->
+<!--            <i class="fa fa-circle offline"></i> offline since Oct 28-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </li>-->
 
-      <li class="clearfix">
-        <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_10.jpg" alt="avatar" />
-        <div class="about">
-          <div class="name">Peyton Mckinney</div>
-          <div class="status">
-            <i class="fa fa-circle online"></i> online
-          </div>
-        </div>
-      </li>
+<!--      <li class="clearfix">-->
+<!--        <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_10.jpg" alt="avatar" />-->
+<!--        <div class="about">-->
+<!--          <div class="name">Peyton Mckinney</div>-->
+<!--          <div class="status">-->
+<!--            <i class="fa fa-circle online"></i> online-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </li>-->
     </ul>
   </div>
 
@@ -243,6 +243,9 @@
 
 </div> <!-- end container -->
 
+
+<div id="chat-data" data-receiver-user-id="<%= @user_ids.first || 0 %>"></div>
+
 <script id="message-template" type="text/x-handlebars-template">
   <li class="clearfix">
     <div class="message-data align-right">
@@ -268,4 +271,11 @@
 </script>
 <script>
     $(".chat-history").scrollTop($(".chat-history")[0].scrollHeight);
+    const user_ids = <%= raw @user_ids %>;
+    $.each(user_ids, function(index, value){
+        $("#user_" + value).click(function(){
+            $("#chat-data").data("receiver-user-id", value);
+            console.log($("#chat-data").data("receiver-user-id"));
+        });
+    });
 </script>

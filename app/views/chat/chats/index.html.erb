@@ -1,3 +1,20 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.slim.js"></script>
+<script>
+    const socket = io('http://localhost:8998');
+    socket.on('coming_message', function(data) {
+        $(".chat-history").append("<li>\n" +
+            "  <div class=\"message-data\">\n" +
+            "    <span class=\"message-data-name\"><i class=\"fa fa-circle online\"></i>"+ data.sender_name +"</span>\n" +
+            "    <span class=\"message-data-time\">"+ data.datetime +"</span>\n" +
+            "  </div>\n" +
+            "  <div class=\"message my-message\">\n" +
+            "    "+ data.content +"\n" +
+            "  </div>\n" +
+            "</li>");
+        $(".chat-history").scrollTop($(".chat-history")[0].scrollHeight);
+    });
+</script>
+
 <% if @provider_accesses.size > 0 %>
 
 <% end %>
@@ -195,15 +212,11 @@
         </li>
 
         <% @messages.each do |message| %>
-          <li class="clearfix">
-            <div class="message-data align-right">
-              <span class="message-data-time" >10:10 AM, Today</span> &nbsp; &nbsp;
-              <span class="message-data-name" ><%= message.patient.full_name %></span> <i class="fa fa-circle me"></i>
-            </div>
-            <div class="message other-message float-right">
-              <%= message.content %>
-            </div>
-          </li>
+          <% if message.sender_id == @patient.id %>
+            <%= render partial: 'chat/chats/partials/my_message', locals: {chat_message: message} %>
+          <% else %>
+            <%= render partial: 'chat/chats/partials/other_message', locals: {chat_message: message} %>
+          <% end %>
         <% end %>
 
       </ul>
@@ -214,6 +227,7 @@
       <%= form_for [@patient, @chat_message], url: patient_chats_path, remote: true do |f| %>
         <%= f.hidden_field :sender_id, value: (current_user.patient? ? @patient.id : @provider.id) %>
         <%= f.hidden_field :provider_access_id, value: @provider_access.id %>
+        <%= f.hidden_field :message_type, value: current_user.role %>
         <%= f.text_area :content, placeholder: "Type your message", rows: 3 %>
 
 <!--      <textarea name="message-to-send" id="message-to-send" placeholder ="Type your message" rows="3"></textarea>-->
@@ -251,4 +265,7 @@
       {{response}}
     </div>
   </li>
+</script>
+<script>
+    $(".chat-history").scrollTop($(".chat-history")[0].scrollHeight);
 </script>

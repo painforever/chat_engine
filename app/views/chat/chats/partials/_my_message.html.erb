@@ -1,0 +1,9 @@
+<li class="clearfix">
+  <div class="message-data align-right">
+    <span class="message-data-time" ><%= send_time((chat_message.created_at || Time.now)) %></span> &nbsp; &nbsp;
+    <span class="message-data-name" ><%= chat_message.patient.full_name rescue "Patient" %></span> <i class="fa fa-circle me"></i>
+  </div>
+  <div class="message other-message float-right">
+    <%= chat_message.content %>
+  </div>
+</li>

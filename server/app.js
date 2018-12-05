@@ -1,9 +1,17 @@
-const app = require('express')();
-const server = require('http').createServer(app);
-const io = require('socket.io')(server);
+var io = require('socket.io')();
+io.on('connection', function(client){
+    console.log('socket connected!');
 
-console.log("waiting for socket users to come in.......");
-io.on('connection', () => {
-  console.log("a user come in!!!");
+
+    client.on('new_message', function(data){
+        console.log("coming message!");
+        console.log(data);
+        client.emit("coming_message", data);
+    });
+
+    client.on('disconnect', function(){
+        console.log("user disconnected!");
+    });
 });
-server.listen(8998);
+console.log("Server starts to listening!!!.....");
+io.listen(8998);

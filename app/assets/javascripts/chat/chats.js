@@ -55,7 +55,7 @@
         },
 
         addMessage: function() {
-            this.messageToSend = this.$textarea.val()
+            this.messageToSend = this.$textarea.val();
             this.render();
         },
         addMessageEnter: function(event) {
@@ -97,5 +97,4 @@
     };
 
     searchFilter.init();
-
 })();

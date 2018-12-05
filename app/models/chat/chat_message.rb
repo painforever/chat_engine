@@ -9,6 +9,10 @@ module Chat
 
     scope :with_sender, -> {includes(:provider, :patient)}
 
+    def sender_name
+      self.message_type == 'patient' ? self.patient.full_name : self.provider.proper_name
+    end
+
     def self.params(params)
       params.require(:chat_message).permit!
     end

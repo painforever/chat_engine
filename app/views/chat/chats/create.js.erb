@@ -1,0 +1,4 @@
+<% if @chat_message.persisted? %>
+  $(".chat-history").append("<%= j render partial: 'chat/chats/partials/message', locals: {chat_message: @chat_message}%>");
+  $(".chat-history").scrollTop($(".chat-history")[0].scrollHeight);
+<% end %>

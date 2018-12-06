@@ -1,0 +1,12 @@
+Hi <%= @user.display_name %>, <br/><br/>
+
+<p>Congrats! Your payment has been placed successfully!</p>
+<br/>
+
+<p>Your card number: <%= @card[:card_number] %></p>
+<p>Transaction Time: <%=call_time Time.now.to_s%></p>
+
+
+<br/>
+<p>Happy Knocking!</p>
+<p>Knock Team</p>

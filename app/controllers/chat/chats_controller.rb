@@ -72,7 +72,7 @@ module Chat
           customer_id = current_user.stripe_customer_id
         end
         Stripe::Charge.create(
-            amount: cart_total_price, # $15.00 this time
+            amount: 2, # $2.00 this time
             currency: 'usd',
             customer: customer_id
         )
@@ -84,8 +84,6 @@ module Chat
                  #{params[:exp_month] || customer[:sources][:data].first[:exp_month]}",
                  card_holder_name: params[:card_holder_name] || ""}
         PaymentMailer.payment_success(current_user, @card).deliver_now
-        PaymentMailer.send_essay(current_user, session[:cart]).deliver_now
-        session[:cart] = nil
         # save the customer ID in your database so you can use it later
         current_user.update_column("stripe_customer_id", customer_id)
       rescue Stripe::CardError => e
@@ -93,7 +91,7 @@ module Chat
         # The card has been declined
         PaymentMailer.payment_failed(current_user, @card).deliver_now
       end
-      render 'payment_confirmation'
+      #render 'payment_confirmation'
     end
 
     def config_cc

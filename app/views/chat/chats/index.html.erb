@@ -3,7 +3,7 @@
     var conversations = [];
     const socket = io('http://localhost:8998');
     socket.on('user_<%= current_user.id %>', function(data) {
-        $(".chat-history").append("<li>\n" +
+        $("#chat-history-ul").append("<li>\n" +
             "  <div class=\"message-data\">\n" +
             "    <span class=\"message-data-name\"><i class=\"fa fa-circle online\"></i>"+ data.sender_name +"</span>\n" +
             "    <span class=\"message-data-time\">"+ data.datetime +"</span>\n" +

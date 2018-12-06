@@ -5,7 +5,7 @@ module Chat
 
     def load_messages
       #conversation_id is just access id
-      @messages = ChatMessage.with_sender.where(provider_access_id: params[:conversation_id]).order(created_at: :desc).limit(5)
+      @messages = ChatMessage.with_sender.where(provider_access_id: params[:conversation_id]).order(:created_at).limit(5)
     end
 
     def index
@@ -14,10 +14,10 @@ module Chat
         @user_ids = Provider.where(id: @provider_accesses.pluck(:provider_id)).pluck(:user_id)
         if params[:access_id].present?
           @provider_access = ProviderAccess.find(params[:access_id])
-          @messages = ChatMessage.with_sender.where(provider_access_id: params[:access_id]).order(created_at: :desc).limit(5)
+          @messages = ChatMessage.with_sender.where(provider_access_id: params[:access_id]).order(:created_at).limit(5)
         else
           @provider_access = ProviderAccess.find(@provider_accesses.first.id)
-          @messages = ChatMessage.with_sender.where(provider_access_id: @provider_accesses.first.id).order(created_at: :desc).limit(5)
+          @messages = ChatMessage.with_sender.where(provider_access_id: @provider_accesses.first.id).order(:created_at).limit(5)
         end
       elsif current_user.provider?
         set_provider
@@ -25,10 +25,10 @@ module Chat
         @user_ids = Patient.where(id: @provider_accesses.pluck(:patient_id)).pluck(:user_id)
         if params[:access_id].present?
           @provider_access = ProviderAccess.find(params[:access_id])
-          @messages = ChatMessage.with_sender.where(provider_access_id: params[:access_id]).order(created_at: :desc).limit(5)
+          @messages = ChatMessage.with_sender.where(provider_access_id: params[:access_id]).order(:created_at).limit(5)
         else
           @provider_access = ProviderAccess.find(@provider_accesses.first.id)
-          @messages = ChatMessage.with_sender.where(provider_access_id: @provider_accesses.first.id).order(created_at: :desc).limit(5)
+          @messages = ChatMessage.with_sender.where(provider_access_id: @provider_accesses.first.id).order(:created_at).limit(5)
         end
       end
     end

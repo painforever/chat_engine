@@ -1,7 +1,12 @@
 module Chat
   class ChatsController < ApplicationController
-    before_action :set_patient, only: [:index, :show, :edit]
+    before_action :set_patient, only: [:index, :show, :edit, :load_messages]
     before_action :set_message, only: [:create, :new, :index]
+
+    def load_messages
+      #conversation_id is just access id
+      @messages = ChatMessage.with_sender.where(provider_access_id: params[:conversation_id]).order(created_at: :desc).limit(5)
+    end
 
     def index
       if current_user.patient?
@@ -9,10 +14,10 @@ module Chat
         @user_ids = Provider.where(id: @provider_accesses.pluck(:provider_id)).pluck(:user_id)
         if params[:access_id].present?
           @provider_access = ProviderAccess.find(params[:access_id])
-          @messages = ChatMessage.with_sender.where(provider_access_id: params[:access_id])
+          @messages = ChatMessage.with_sender.where(provider_access_id: params[:access_id]).order(created_at: :desc).limit(5)
         else
           @provider_access = ProviderAccess.find(@provider_accesses.first.id)
-          @messages = ChatMessage.with_sender.where(provider_access_id: @provider_accesses.first.id)
+          @messages = ChatMessage.with_sender.where(provider_access_id: @provider_accesses.first.id).order(created_at: :desc).limit(5)
         end
       elsif current_user.provider?
         set_provider
@@ -20,10 +25,10 @@ module Chat
         @user_ids = Patient.where(id: @provider_accesses.pluck(:patient_id)).pluck(:user_id)
         if params[:access_id].present?
           @provider_access = ProviderAccess.find(params[:access_id])
-          @messages = ChatMessage.with_sender.where(provider_access_id: params[:access_id])
+          @messages = ChatMessage.with_sender.where(provider_access_id: params[:access_id]).order(created_at: :desc).limit(5)
         else
           @provider_access = ProviderAccess.find(@provider_accesses.first.id)
-          @messages = ChatMessage.with_sender.where(provider_access_id: @provider_accesses.first.id)
+          @messages = ChatMessage.with_sender.where(provider_access_id: @provider_accesses.first.id).order(created_at: :desc).limit(5)
         end
       end
     end
@@ -34,7 +39,6 @@ module Chat
     end
 
 
-    
 
     def pay
       Stripe.api_key = Constants::STRIPE_API_SECRET_KEY
@@ -67,11 +71,11 @@ module Chat
           customer = Stripe::Customer.retrieve(current_user.stripe_customer_id)
           customer_id = current_user.stripe_customer_id
         end
-        # Stripe::Charge.create(
-        #     amount: cart_total_price, # $15.00 this time
-        #     currency: 'usd',
-        #     customer: customer_id
-        # )
+        Stripe::Charge.create(
+            amount: cart_total_price, # $15.00 this time
+            currency: 'usd',
+            customer: customer_id
+        )
 
         #TODO I know this is ugly but it can define less functions, we can optimize this later
         @card = {card_number: ("*****#{params[:card_number][-4..-1]}" rescue nil) || "*****#{customer[:sources][:data].first[:last4]}",

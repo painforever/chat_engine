@@ -1,5 +1,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.slim.js"></script>
 <script>
+    var conversations = [];
     const socket = io('http://localhost:8998');
     socket.on('user_<%= current_user.id %>', function(data) {
         $(".chat-history").append("<li>\n" +
@@ -26,6 +27,9 @@
     </div>
     <ul class="list">
       <% @provider_accesses.each_with_index do |access, i| %>
+        <script>
+          conversations.push(<%= access.id %>);
+        </script>
         <% if access.provider.present? && access.provider.user.present? %>
           <% provider = access.provider %>
 
@@ -158,7 +162,7 @@
     </div> <!-- end chat-header -->
 
     <div class="chat-history">
-      <ul>
+      <ul id="chat-history-ul">
         <li class="clearfix">
           <div class="message-data align-right">
             <span class="message-data-time" >10:10 AM, Today</span> &nbsp; &nbsp;
@@ -210,14 +214,7 @@
           <i class="fa fa-circle online" style="color: #AED2A6"></i>
           <i class="fa fa-circle online" style="color:#DAE9DA"></i>
         </li>
-
-        <% @messages.each do |message| %>
-          <% if message.sender_id == @patient.id %>
-            <%= render partial: 'chat/chats/partials/my_message', locals: {chat_message: message} %>
-          <% else %>
-            <%= render partial: 'chat/chats/partials/other_message', locals: {chat_message: message} %>
-          <% end %>
-        <% end %>
+        <%= render partial: "chat/chats/partials/messages", locals: {messages: @messages} %>
 
       </ul>
 
@@ -244,7 +241,7 @@
 </div> <!-- end container -->
 
 
-<div id="chat-data" data-receiver-user-id="<%= @user_ids.first || 0 %>"></div>
+<div id="chat-data" data-receiver-user-id="<%= @user_ids.first || 0 %>" data-conversation-id="<%= @provider_accesses.first.id || 0 %>"></div>
 
 <script id="message-template" type="text/x-handlebars-template">
   <li class="clearfix">
@@ -275,7 +272,18 @@
     $.each(user_ids, function(index, value){
         $("#user_" + value).click(function(){
             $("#chat-data").data("receiver-user-id", value);
+            $("#chat_message_provider_access_id").val(conversations[index]);
             console.log($("#chat-data").data("receiver-user-id"));
+            $.ajax({
+                method: "GET",
+                url: "/chat/chats/load_messages",
+                data: {
+                    conversation_id: $("#chat_message_provider_access_id").val(),
+                    patient_id: <%= @patient.id %>
+                }
+            }).done(function( msg ) {
+
+            });
         });
     });
 </script>

@@ -271,6 +271,7 @@
     const user_ids = <%= raw @user_ids %>;
     $.each(user_ids, function(index, value){
         $("#user_" + value).click(function(){
+            $("#chat-history-ul").html('<%= image_tag 'chat/message-loader.gif' %>');
             $("#chat-data").data("receiver-user-id", value);
             $("#chat_message_provider_access_id").val(conversations[index]);
             console.log($("#chat-data").data("receiver-user-id"));
